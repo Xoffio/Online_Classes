@@ -2,6 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/DMux4Way.hdl
+// Solved by: Ricardo Marques
 
 /**
  * 4-way demultiplexor:
@@ -17,4 +18,17 @@ CHIP DMux4Way {
 
     PARTS:
     // Put your code here:
+
+    Not(in=sel[0], out=notSel0);
+    Not(in=sel[1], out=notSel1);
+
+    And(a=in, b=notSel0, out=fcAnd01);
+    And(a=in, b=sel[0], out=fcAnd02);
+    And(a=in, b=sel[1], out=fcAnd03);
+    And(a=in, b=sel[0], out=fcAnd04);
+
+    And(a=notSel1, b=fcAnd01, out=a);
+    And(a=notSel1, b=fcAnd02, out=b);
+    And(a=notSel0, b=fcAnd03, out=c);
+    And(a=sel[1], b=fcAnd04, out=d);
 }

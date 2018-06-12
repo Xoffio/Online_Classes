@@ -2,9 +2,10 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/And.hdl
+// Solved by: Ricardo Marques
 
 /**
- * And gate: 
+ * And gate:
  * out = 1 if (a == 1 and b == 1)
  *       0 otherwise
  */
@@ -15,4 +16,6 @@ CHIP And {
 
     PARTS:
     // Put your code here:
+    Nand(a=a, b=b, out=tmp);
+    Not(in=tmp, out=out);
 }

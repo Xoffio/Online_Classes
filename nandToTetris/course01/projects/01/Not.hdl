@@ -2,6 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/Not.hdl
+// Solved by: Ricardo Marques
 
 /**
  * Not gate:
@@ -14,4 +15,6 @@ CHIP Not {
 
     PARTS:
     // Put your code here:
+    //BUILTIN nand;
+    Nand(a=in, b=in, out=out);
 }

@@ -2,6 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/Xor.hdl
+// Solved by: Ricardo Marques
 
 /**
  * Exclusive-or gate:
@@ -14,4 +15,9 @@ CHIP Xor {
 
     PARTS:
     // Put your code here:
+    Not(in=a, out=notA);
+    Not(in=b, out=notB);
+    And(a=notA, b=b, out=notAB);
+    And(a=a, b=notB, out=aNotB);
+    Or(a=notAB, b=aNotB, out=out);
 }
