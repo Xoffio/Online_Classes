@@ -2,6 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/03/a/PC.hdl
+// Solved by: Ricardo Marques
 
 /**
  * A 16-bit counter with load and reset control bits.
@@ -16,5 +17,22 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+
+    // Val when reset (all zero)
+    Not16(in=in, out=notIn);
+    And16(a=in, b=notIn, out=zeroVal);
+
+    // Increment val
+    Inc16(in=tmpOut, out=incOut);
+
+    // If (load==1) muxOut01=in, else muxOut01=incOut
+    Mux16(a=incOut, b=in, sel=load, out=muxOut01);
+
+    // If (reset==1) muxOut02=zeroVal, else muxOut01=muxOut01
+    Mux16(a=muxOut01, b=zeroVal, sel=reset, out=muxOut02);
+
+    Or(a=load, b=reset, out=orOut01);
+    Or(a=inc, b=orOut01, out=orOut02);
+
+    Register(in=muxOut02, load=orOut02, out=tmpOut, out=out);
 }
