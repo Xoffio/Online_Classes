@@ -2,6 +2,7 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/03/a/RAM8.hdl
+// Solved by: Ricardo Marques
 
 /**
  * Memory of 8 registers, each 16 bit-wide. Out holds the value
@@ -16,4 +17,17 @@ CHIP RAM8 {
 
     PARTS:
     // Put your code here:
+    DMux8Way(in=load, sel=address, a=dmuxOutA, b=dmuxOutB ,c=dmuxOutC ,d=dmuxOutD ,e=dmuxOutE ,f=dmuxOutF ,g=dmuxOutG ,h=dmuxOutH);
+
+    Register(in=in, load=dmuxOutA, out=regOut0);
+    Register(in=in, load=dmuxOutB, out=regOut1);
+    Register(in=in, load=dmuxOutC, out=regOut2);
+    Register(in=in, load=dmuxOutD, out=regOut3);
+    Register(in=in, load=dmuxOutE, out=regOut4);
+    Register(in=in, load=dmuxOutF, out=regOut5);
+    Register(in=in, load=dmuxOutG, out=regOut6);
+    Register(in=in, load=dmuxOutH, out=regOut7);
+
+    Mux8Way16(a=regOut0, b=regOut1, c=regOut2, d=regOut3, e=regOut4, f=regOut5, g=regOut6, h=regOut7, sel=address, out=out);
+
 }
