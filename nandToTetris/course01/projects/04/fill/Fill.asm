@@ -43,7 +43,6 @@ D=M             // Get the value to print in the pixel
 A=M
 M=D             // Print the pixel
 
-
 @SCREEN
 D=A
 @8192
