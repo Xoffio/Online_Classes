@@ -2,23 +2,24 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/05/Memory.hdl
+// Solved by: Ricardo Marques
 
 /**
  * The complete address space of the Hack computer's memory,
- * including RAM and memory-mapped I/O. 
+ * including RAM and memory-mapped I/O.
  * The chip facilitates read and write operations, as follows:
  *     Read:  out(t) = Memory[address(t)](t)
  *     Write: if load(t-1) then Memory[address(t-1)](t) = in(t-1)
- * In words: the chip always outputs the value stored at the memory 
- * location specified by address. If load==1, the in value is loaded 
- * into the memory location specified by address. This value becomes 
+ * In words: the chip always outputs the value stored at the memory
+ * location specified by address. If load==1, the in value is loaded
+ * into the memory location specified by address. This value becomes
  * available through the out output from the next time step onward.
  * Address space rules:
- * Only the upper 16K+8K+1 words of the Memory chip are used. 
- * Access to address>0x6000 is invalid. Access to any address in 
- * the range 0x4000-0x5FFF results in accessing the screen memory 
- * map. Access to address 0x6000 results in accessing the keyboard 
- * memory map. The behavior in these addresses is described in the 
+ * Only the upper 16K+8K+1 words of the Memory chip are used.
+ * Access to address>0x6000 is invalid. Access to any address in
+ * the range 0x4000-0x5FFF results in accessing the screen memory
+ * map. Access to address 0x6000 results in accessing the keyboard
+ * memory map. The behavior in these addresses is described in the
  * Screen and Keyboard chip specifications given in the book.
  */
 
@@ -27,5 +28,21 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+
+    DMux8Way(in=load, sel=address[0..2], a=dmuxOutA, b=dmuxOutB ,c=dmuxOutC ,d=dmuxOutD ,e=dmuxOutE ,f=dmuxOutF ,g=dmuxOutG ,h=dmuxOutH);
+
+    // 16K RAM
+    RAM4K(in=in, load=dmuxOutA, address=address[3..14], out=memOut1);
+    RAM4K(in=in, load=dmuxOutB, address=address[3..14], out=memOut2);
+    RAM4K(in=in, load=dmuxOutC, address=address[3..14], out=memOut3);
+    RAM4K(in=in, load=dmuxOutD, address=address[3..14], out=memOut4);
+
+    // 8K SCREEN
+    RAM4K(in=in, load=dmuxOutE, address=address[3..14], out=memOut5);
+    RAM4K(in=in, load=dmuxOutF, address=address[3..14], out=memOut6);
+
+    // KEYBOARD
+    Register(in=in, load=dmuxOutG, out=memOut7);
+
+    Mux8Way16(a=memOut1, b=memOut2, c=memOut3, d=memOut4, e=memOut5, f=memOut6, g=memOut7, sel=address[0..2], out=out);
 }
