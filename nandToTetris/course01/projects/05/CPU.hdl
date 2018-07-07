@@ -2,27 +2,52 @@
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/05/CPU.hdl
+// Solved by: Ricardo Marques
 
 /**
  * The Hack CPU (Central Processing unit), consisting of an ALU,
  * two registers named A and D, and a program counter named PC.
- * The CPU is designed to fetch and execute instructions written in 
+ * The CPU is designed to fetch and execute instructions written in
  * the Hack machine language. In particular, functions as follows:
- * Executes the inputted instruction according to the Hack machine 
+ * Executes the inputted instruction according to the Hack machine
  * language specification. The D and A in the language specification
  * refer to CPU-resident registers, while M refers to the external
- * memory location addressed by A, i.e. to Memory[A]. The inM input 
- * holds the value of this location. If the current instruction needs 
- * to write a value to M, the value is placed in outM, the address 
- * of the target location is placed in the addressM output, and the 
- * writeM control bit is asserted. (When writeM==0, any value may 
- * appear in outM). The outM and writeM outputs are combinational: 
- * they are affected instantaneously by the execution of the current 
- * instruction. The addressM and pc outputs are clocked: although they 
- * are affected by the execution of the current instruction, they commit 
- * to their new values only in the next time step. If reset==1 then the 
- * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
- * than to the address resulting from executing the current instruction. 
+ * memory location addressed by A, i.e. to Memory[A]. The inM input
+ * holds the value of this location. If the current instruction needs
+ * to write a value to M, the value is placed in outM, the address
+ * of the target location is placed in the addressM output, and the
+ * writeM control bit is asserted. (When writeM==0, any value may
+ * appear in outM). The outM and writeM outputs are combinational:
+ * they are affected instantaneously by the execution of the current
+ * instruction. The addressM and pc outputs are clocked: although they
+ * are affected by the execution of the current instruction, they commit
+ * to their new values only in the next time step. If reset==1 then the
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather
+ * than to the address resulting from executing the current instruction.
+ */
+
+ /*
+  Instruction format ixxaccccccdddjjj
+  i = opcode.
+    0 = A-instruction
+    1 = C-instruction
+
+  a = comp column (check cInstructuin01.png)
+    0 = compCol1 (values from A)
+    1 = compCol2 (values from M or Memory )
+
+  c = values for the ALU (check ALU_Table.png)
+
+  d = destination. This define where the ALU's result is goint to be save it
+    1d = A register
+    2d = D register
+    3d = RAM[A]
+
+  j = jumps
+    1j [13]
+    2j [14]
+    3j [15]
+
  */
 
 CHIP CPU {
@@ -34,10 +59,64 @@ CHIP CPU {
                          // the current program (reset==0).
 
     OUT outM[16],        // M value output
-        writeM,          // Write to M? 
+        writeM,          // Write to M?
         addressM[15],    // Address in data memory (of M)
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+
+    // Check the opcode(i) whether 0=A-instruction, or 1=C-instruction
+    Mux16(a=instruction, b=aluOut, sel=instruction[0], out=muxOut01);
+
+    // Load value for A-register
+    And(a=instruction[0], b=instruction[10], out=loadA);
+
+    // A-register
+    Register(in=muxOut01, load=loadA, out=aRegisterOut, out=addressM);
+
+    // Second mux16 previous to the ALU
+    // This mux decide if get the value from A-register or from memory (M)
+    Mux16(a=aRegisterOut, b=inM, sel=instruction[3], out=muxOut02);
+
+    // D Register
+    Register(in=aluOut, load=instruction[11], out=dRegisterOut);
+
+    // In order to set writeM out
+    Or(instruction[12, instruction[12]], out=writeM)
+
+    // ALU
+    ALU(x=dRegisterOut, y=muxOut02, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=aluOut, out=outM, zr=aluZrOut, ng=aluNgOut);
+    Not(in=aluZrOut, out=aluNotZrOut);
+    Not(in=aluNgOut, out=aluNotNgOut);
+
+    // ------- JUMPS section -------
+
+    // JMP
+    And(a=instruction[15], b=instruction[14], out=jmpOut01);
+    And(a=instruction[13], b=jmpOut01, out=jmpOut);
+
+    // JGE
+    And(a=instruction[15], b=instruction[14], out=jgeOut01);
+    Or(a=jgeAnd01, b=aluZrOut, out=jgeOut02);
+    And(a=jgeOut02, b=aluNotNgOut, out=jgeOut);
+
+    // JGT
+    And(a=instruction[15], b=aluNotZrOut, out=jgtOut01);
+    And(a=jgtOut01, b=aluNotNgOut, out=jgtOut);
+
+    // JEQ
+    And(a=, b=, out=);
+
+    // JLT
+    And(a=, b=, out=);
+
+    // JNE
+    And(a=, b=, out=);
+    And(a=, b=, out=);
+
+    // JLE
+    And(a=, b=, out=);
+    And(a=, b=, out=);
+
+    // PC counter
 }
