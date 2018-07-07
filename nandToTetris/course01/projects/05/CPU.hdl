@@ -72,7 +72,7 @@ CHIP CPU {
     And(a=instruction[0], b=instruction[10], out=loadA);
 
     // A-register
-    Register(in=muxOut01, load=loadA, out=aRegisterOut, out=addressM);
+    Register(in=muxOut01, load=loadA, out=aRegisterOut, out[1..15]=addressM);
 
     // Second mux16 previous to the ALU
     // This mux decide if get the value from A-register or from memory (M)
@@ -82,7 +82,7 @@ CHIP CPU {
     Register(in=aluOut, load=instruction[11], out=dRegisterOut);
 
     // In order to set writeM out
-    Or(instruction[12, instruction[12]], out=writeM)
+    Or(a=instruction[12], b=instruction[12], out=writeM);
 
     // ALU
     ALU(x=dRegisterOut, y=muxOut02, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=aluOut, out=outM, zr=aluZrOut, ng=aluNgOut);
@@ -97,7 +97,7 @@ CHIP CPU {
 
     // JGE
     And(a=instruction[15], b=instruction[14], out=jgeOut01);
-    Or(a=jgeAnd01, b=aluZrOut, out=jgeOut02);
+    Or(a=jgeOut01, b=aluZrOut, out=jgeOut02);
     And(a=jgeOut02, b=aluNotNgOut, out=jgeOut);
 
     // JGT
@@ -105,18 +105,32 @@ CHIP CPU {
     And(a=jgtOut01, b=aluNotNgOut, out=jgtOut);
 
     // JEQ
-    And(a=, b=, out=);
+    And(a=instruction[14], b=aluZrOut, out=jeqOut);
 
     // JLT
-    And(a=, b=, out=);
+    And(a=instruction[13], b=aluNgOut, out=jltOut);
 
     // JNE
-    And(a=, b=, out=);
-    And(a=, b=, out=);
+    And(a=instruction[13], b=instruction[15], out=jneOut01);
+    And(a=jneOut01, b=aluNotZrOut, out=jneOut);
 
     // JLE
-    And(a=, b=, out=);
-    And(a=, b=, out=);
+    And(a=instruction[13], b=instruction[14], out=jleOut01);
+    And(a=jleOut01, b=aluNgOut, out=jleOut);
+
+    // Get together all the jmp
+    Or(a=jleOut, b=jneOut, out=jmpTogether01);
+    Or(a=jltOut, b=jeqOut, out=jmpTogether02);
+    Or(a=jgtOut, b=jgeOut, out=jmpTogether03);
+    Or(a=jmpTogether01, b=jmpTogether02, out=jmpTogether04);
+    Or(a=jmpTogether03, b=jmpTogether04, out=jmpTogether05);
+    Or(a=jmpTogether05, b=jmpOut, out=jmpsLoad);
+
+    // Make the jumpers and At load value
+    Not(in=instruction[0], out=notA);
+    Or(a=notA, b=jmpsLoad, out=jmpOrAtLoad);
 
     // PC counter
+    Not(in=reset, out=notReset);
+    PC(in=aRegisterOut, load=jmpOrAtLoad, inc=notReset, reset=reset, out[1..15]=pc);
 }
