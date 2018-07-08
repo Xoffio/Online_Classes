@@ -44,9 +44,9 @@
     3d = RAM[A]
 
   j = jumps
-    1j [13]
-    2j [14]
-    3j [15]
+    1j [2]
+    2j [1]
+    3j [0]
 
  */
 
@@ -65,58 +65,68 @@ CHIP CPU {
 
     PARTS:
 
+    // Not A
+    Not(in=instruction[15], out=notA);
+
     // Check the opcode(i) whether 0=A-instruction, or 1=C-instruction
-    Mux16(a=instruction, b=aluOut, sel=instruction[0], out=muxOut01);
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=muxOut01);
 
     // Load value for A-register
-    And(a=instruction[0], b=instruction[10], out=loadA);
+    And(a=instruction[15], b=instruction[5], out=tmpLoadA);
+    Or(a=notA, b=tmpLoadA, out=loadA);
 
     // A-register
-    Register(in=muxOut01, load=loadA, out=aRegisterOut, out[1..15]=addressM);
+    ARegister(in=muxOut01, load=loadA, out=aRegisterOut, out[0..14]=addressM);
 
     // Second mux16 previous to the ALU
     // This mux decide if get the value from A-register or from memory (M)
-    Mux16(a=aRegisterOut, b=inM, sel=instruction[3], out=muxOut02);
+    Mux16(a=aRegisterOut, b=inM, sel=instruction[12], out=muxOut02);
 
     // D Register
-    Register(in=aluOut, load=instruction[11], out=dRegisterOut);
+    And(a=instruction[15], b=instruction[4], out=dRegLoad);
+    DRegister(in=aluOut, load=dRegLoad, out=dRegisterOut);
 
     // In order to set writeM out
-    Or(a=instruction[12], b=instruction[12], out=writeM);
+    And(a=instruction[3], b=instruction[15], out=writeM);
 
     // ALU
-    ALU(x=dRegisterOut, y=muxOut02, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=aluOut, out=outM, zr=aluZrOut, ng=aluNgOut);
+    ALU(x=dRegisterOut, y=muxOut02, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluOut, out=outM, zr=aluZrOut, ng=aluNgOut);
     Not(in=aluZrOut, out=aluNotZrOut);
     Not(in=aluNgOut, out=aluNotNgOut);
 
     // ------- JUMPS section -------
 
     // JMP
-    And(a=instruction[15], b=instruction[14], out=jmpOut01);
-    And(a=instruction[13], b=jmpOut01, out=jmpOut);
+    And(a=instruction[0], b=instruction[1], out=jmpOut01);
+    And(a=instruction[2], b=jmpOut01, out=jmpOut);
 
     // JGE
-    And(a=instruction[15], b=instruction[14], out=jgeOut01);
-    Or(a=jgeOut01, b=aluZrOut, out=jgeOut02);
-    And(a=jgeOut02, b=aluNotNgOut, out=jgeOut);
+    And(a=instruction[0], b=instruction[1], out=jgeOut01);
+    //Or(a=jgeOut01, b=aluZrOut, out=jgeOut02);
+    And(a=jgeOut01, b=aluNotNgOut, out=jgeOut);
 
     // JGT
-    And(a=instruction[15], b=aluNotZrOut, out=jgtOut01);
+    And(a=instruction[0], b=aluNotZrOut, out=jgtOut01);
     And(a=jgtOut01, b=aluNotNgOut, out=jgtOut);
 
     // JEQ
-    And(a=instruction[14], b=aluZrOut, out=jeqOut);
+    And(a=instruction[1], b=aluZrOut, out=jeqOut);
 
     // JLT
-    And(a=instruction[13], b=aluNgOut, out=jltOut);
+    And(a=instruction[2], b=aluNgOut, out=jltOut);
 
     // JNE
-    And(a=instruction[13], b=instruction[15], out=jneOut01);
+    And(a=instruction[2], b=instruction[0], out=jneOut01);
     And(a=jneOut01, b=aluNotZrOut, out=jneOut);
 
     // JLE
-    And(a=instruction[13], b=instruction[14], out=jleOut01);
+    And(a=instruction[2], b=instruction[1], out=jleOut01);
     And(a=jleOut01, b=aluNgOut, out=jleOut);
+
+    // No jump
+    Or(a=instruction[0], b=instruction[1], out=tmpNoJump);
+    Or(a=instruction[2], b=tmpNoJump, out=noJump);
+
 
     // Get together all the jmp
     Or(a=jleOut, b=jneOut, out=jmpTogether01);
@@ -124,13 +134,14 @@ CHIP CPU {
     Or(a=jgtOut, b=jgeOut, out=jmpTogether03);
     Or(a=jmpTogether01, b=jmpTogether02, out=jmpTogether04);
     Or(a=jmpTogether03, b=jmpTogether04, out=jmpTogether05);
-    Or(a=jmpTogether05, b=jmpOut, out=jmpsLoad);
+    Or(a=jmpTogether05, b=jmpOut, out=tmpJmpFlag);
+    And(a=tmpJmpFlag, b=noJump, out=jmpFlag);
 
     // Make the jumpers and At load value
-    Not(in=instruction[0], out=notA);
-    Or(a=notA, b=jmpsLoad, out=jmpOrAtLoad);
+
+    And(a=instruction[15], b=jmpFlag, out=jmpLoad);
 
     // PC counter
     Not(in=reset, out=notReset);
-    PC(in=aRegisterOut, load=jmpOrAtLoad, inc=notReset, reset=reset, out[1..15]=pc);
+    PC(in=aRegisterOut, load=jmpLoad, inc=notReset, reset=reset, out[0..14]=pc);
 }
