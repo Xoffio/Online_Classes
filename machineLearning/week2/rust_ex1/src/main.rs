@@ -3,6 +3,7 @@ use std::io::{stdin, Read};
 
 mod warm_up_exercise;
 mod plot_data;
+mod reader;
 
 
 fn main() {
@@ -17,7 +18,10 @@ fn main() {
     
     // ======================= Part 2: Plotting =======================
 
-    let vec01 = arr1(&[10.0, 20.0, 300.0]);
-    let vec02 = arr1(&[40.0, 50.0, 600.]);
-    plot_data::plot_data(vec01, vec02);
+    let vec01 = arr1(&[10.0, 20.0, 3.0]);
+    let vec02 = arr1(&[4.0, 5.0, 6.]);
+    plot_data::plot_data_arr1(vec01, vec02, "test1.png");
+
+    let data = reader::read_to_arr2("../machine-learning-ex1/ex1/ex1data1.txt");
+    plot_data::plot_data_arr2(data, "test2.png");
 }
