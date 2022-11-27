@@ -29,7 +29,7 @@ pub fn plot_data_arr1(x: Array1::<f64>, y: Array1::<f64>, out_path: &str){
     ).unwrap();
 }
 
-pub fn plot_data_arr2(xy: Array2::<f64>, out_path: &str){
+pub fn plot_data_arr2(xy: &Array2::<f64>, out_path: &str){
   
     // Create the bitmap ( where we are going to draw our data)
     let root_area = BitMapBackend::new(out_path, (960, 540)).into_drawing_area();

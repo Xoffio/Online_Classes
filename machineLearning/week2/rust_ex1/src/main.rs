@@ -4,6 +4,7 @@ use std::io::{stdin, Read};
 mod warm_up_exercise;
 mod plot_data;
 mod reader;
+mod linear_regression;
 
 
 fn main() {
@@ -13,7 +14,7 @@ fn main() {
 
     assert_eq!(warm_up_exercise::warm_up_exercise(), Array2::<i32>::eye(5));
 
-    println!("Program paused. Press enter to continue.\n");
+    print!("Program paused. Press enter to continue.\n");
     stdin().read(&mut [0]).unwrap();
     
     // ======================= Part 2: Plotting =======================
@@ -23,5 +24,14 @@ fn main() {
     plot_data::plot_data_arr1(vec01, vec02, "test1.png");
 
     let data = reader::read_to_arr2("../machine-learning-ex1/ex1/ex1data1.txt");
-    plot_data::plot_data_arr2(data, "test2.png");
+    plot_data::plot_data_arr2(&data, "test2.png");
+
+    print!("Program paused. Press enter to continue.\n");
+    stdin().read(&mut [0]).unwrap();
+
+    // =================== Part 3: Cost and Gradient descent ===================
+
+    let theta = arr1(&[-1.0, 2.0]);
+
+    linear_regression::compute_cost(&data, &theta);
 }
