@@ -20,6 +20,7 @@ for iter = 1:num_iters
   des =  alpha * (1/m) * sum( ((X*theta)-y).*X );
   
   theta = theta - des';
+  %fprintf('-----> %d %d}\n   ', theta);
   
     % ============================================================
 
