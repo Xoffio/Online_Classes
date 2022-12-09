@@ -65,6 +65,7 @@ fn main() {
     println!("Expected theta values (approx) [-3.6303,  1.1664]\n");
 
     // Plot the linear fit
+    plot_data::plot_data_arr2_and_pred_line(&data, &theta, "test3.png");
     //plot(X(:,2), X*theta, '-')
 
     // Predict values for population sizes of 35,000 and 70,000
