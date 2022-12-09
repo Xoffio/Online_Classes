@@ -61,27 +61,19 @@ fn main() {
     linear_regression::gradient_descent(&data, &mut theta, alpha, iterations);
 
     // print theta to screen
-    println!("Theta found by gradient descent:\n");
-    println!("{}", theta);
-    println!("Expected theta values (approx)\n");
-    println!(" [-3.6303,  1.1664]\n\n");
+    println!("Theta found by gradient descent: {:.4}", theta);
+    println!("Expected theta values (approx) [-3.6303,  1.1664]\n");
 
     // Plot the linear fit
-    /*hold on; % keep previous plot visible
-    plot(X(:,2), X*theta, '-')
-    legend('Training data', 'Linear regression')
-    hold off % don't overlay any more plots on this figure
+    //plot(X(:,2), X*theta, '-')
 
-    % Predict values for population sizes of 35,000 and 70,000
-    predict1 = [1, 3.5] *theta;
-    println!("For population = 35,000, we predict a profit of %f\n',...
-        predict1*10000);
-    predict2 = [1, 7] * theta;
-    println!("For population = 70,000, we predict a profit of %f\n',...
-        predict2*10000);
+    // Predict values for population sizes of 35,000 and 70,000
+    let predict1 =  arr1(&[1.0, 3.5]).dot(&theta);
+    println!("For population = 35,000, we predict a profit of {:.2}", predict1*10000.0);
+    
+    let predict2 = arr1(&[1.0, 7.0]).dot(&theta);
+    println!("For population = 70,000, we predict a profit of {:.2}\n", predict2*10000.0);
 
-    println!("Program paused. Press enter to continue.\n');
-    pause;*/
-
-    // ============= Part 4: Visualizing J(theta_0, theta_1) =============
+    println!("Program paused. Press enter to continue.\n");
+    stdin().read(&mut [0]).unwrap();
 }

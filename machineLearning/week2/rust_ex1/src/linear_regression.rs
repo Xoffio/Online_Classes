@@ -34,6 +34,7 @@ pub fn gradient_descent(xy: &Array2<f64>, theta: &mut Array1<f64>, alpha: f64, i
         theta[0] = theta[0] - des_0;
         theta[1] = theta[1] - des_1;
 
+        //compute_cost(xy, theta);
         //println!("{}", theta);
     }
 
