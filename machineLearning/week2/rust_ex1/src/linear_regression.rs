@@ -25,14 +25,11 @@ pub fn gradient_descent(xy: &Array2<f64>, theta: &mut Array1<f64>, alpha: f64, i
 
     //println!("{:?}", theta);
 
-    let xx = xy.slice(s![.., 0]);
     for _i in 0..iterations{
-        let pre_des = x.dot(theta)-y;
-        let des_0 = alpha * (1.0/x_num_of_cols as f64) * &pre_des.sum();
-        let des_1 = alpha * (1.0/x_num_of_cols as f64) * (pre_des * xx).sum();
-    
-        theta[0] = theta[0] - des_0;
-        theta[1] = theta[1] - des_1;
+        let pre_des: Array1<f64> = x.dot(theta)-y;
+        let des = alpha * (1.0/x_num_of_cols as f64) * pre_des.dot(&x);
+
+        *theta = theta.clone() - des;
 
         //compute_cost(xy, theta);
         //println!("{}", theta);
