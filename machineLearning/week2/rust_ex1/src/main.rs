@@ -1,4 +1,4 @@
-use ndarray::{Array2, arr1, Array1};
+use ndarray::{Array2, arr1, Array1, s};
 use std::io::{stdin, Read};
 
 mod warm_up_exercise;
@@ -76,4 +76,20 @@ fn main() {
 
     println!("Program paused. Press enter to continue.\n");
     stdin().read(&mut [0]).unwrap();
+
+    // ================ MULTI ================
+    // ================ Part 1: Feature Normalization ================
+
+    println!("Loading data ...\n");
+
+    // Load Data
+    let (x, y) = reader::read_xs_y("../machine-learning-ex1/ex1/ex1data2.txt", 0..2, 2);
+
+    //m = length(y);
+
+    // Print out some data points
+    println!("First 10 examples from the dataset:");
+    println!(" x = {},\n y = {} \n", x.slice(s![0..10, ..]), y.slice(s![0..10]));
+
+    println!("Program paused. Press enter to continue.\n");
 }
