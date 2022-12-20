@@ -19,7 +19,6 @@ pub fn read_to_arr2(file_path: &str) -> Array2<f64>{
 }
 
 pub fn read_xs_y(file_path: &str, x_range: std::ops::Range<usize>, yi: usize) -> (Array2<f64>, Array1<f64>) {
-
     // n = number of features/variables
     let n = x_range.len();
  

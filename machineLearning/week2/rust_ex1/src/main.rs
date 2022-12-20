@@ -5,6 +5,7 @@ mod warm_up_exercise;
 mod plot_data;
 mod reader;
 mod linear_regression;
+mod data_manipulation;
 
 
 fn main() {
@@ -83,18 +84,29 @@ fn main() {
     println!("Loading data ...\n");
 
     // Load Data
-    //let (x, y) = reader::read_xs_y("../machine-learning-ex1/ex1/ex1data2.txt", 0..2, 2);
-    let (x, y) = reader::read_xs_y("../machine-learning-ex1/ex1/ex1data1.txt", 0..1, 1);
-
+    let (x, y) = reader::read_xs_y("../machine-learning-ex1/ex1/ex1data2.txt", 0..2, 2);
     //m = length(y);
 
     // Print out some data points
     println!("First 10 examples from the dataset:");
-    //println!(" x = {},\n y = {} \n", x.slice(s![0..10, ..]), y.slice(s![0..10]));
+    println!(" x = {},\n y = {} \n", x.slice(s![0..10, ..]), y.slice(s![0..10]));
 
     //let theta = arr1(&[0.5, 0.5, 0.5]);
-    let theta = arr1(&[0.0, 0.0]);
+    let theta = arr1(&[0.0, 0.0, 0.0]);
     linear_regression::compute_cost_multi(&x, &y, &theta);
 
     println!("Program paused. Press enter to continue.\n");
+    stdin().read(&mut [0]).unwrap();
+
+    // Scale features and set them to zero mean
+    println!("Normalizing Features ...");
+    data_manipulation::feature_normalize(x);
+
+    //[X mu sigma] = featureNormalize(X);
+
+    // Add intercept term to X
+    //X = [ones(m, 1) X];
+
+
+    // ================ Part 2: Gradient Descent ================
 }
