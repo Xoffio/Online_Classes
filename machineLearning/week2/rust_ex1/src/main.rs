@@ -84,7 +84,7 @@ fn main() {
     println!("Loading data ...\n");
 
     // Load Data
-    let (x, y) = reader::read_xs_y("../machine-learning-ex1/ex1/ex1data2.txt", 0..2, 2);
+    let (mut x, y) = reader::read_xs_y("../machine-learning-ex1/ex1/ex1data2.txt", 0..2, 2);
     //m = length(y);
 
     // Print out some data points
@@ -100,7 +100,8 @@ fn main() {
 
     // Scale features and set them to zero mean
     println!("Normalizing Features ...");
-    data_manipulation::feature_normalize(x);
+    data_manipulation::feature_normalize(&mut x);
+    println!("{:?}", x);
 
     //[X mu sigma] = featureNormalize(X);
 
