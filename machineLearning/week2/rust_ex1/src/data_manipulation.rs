@@ -38,7 +38,7 @@ pub fn feature_normalize<T: Dimension + RemoveAxis>(arr: &mut ArrayBase<OwnedRep
     let mut min_max_iter = min_max.iter();
     // Lets normalize the matrix
     for mut col in arr.axis_iter_mut(Axis(1)){
-        let (min, max, mean, stand_der) = min_max_iter.next().unwrap();
+        let (_min, _max, mean, stand_der) = min_max_iter.next().unwrap();
 
         //println!("{:?}", col);
         //println!("iter {:?}", min_max_iter.next());

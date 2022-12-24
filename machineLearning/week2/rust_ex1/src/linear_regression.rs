@@ -1,4 +1,4 @@
-use ndarray::{Array2, s, Array1, stack, Axis};
+use ndarray::{Array2, s, Array1, stack, Axis, arr1};
 //use std::time::Instant;
 
 pub fn compute_cost(xy: &Array2<f64>, theta: &Array1<f64>) -> f64 {
@@ -53,5 +53,32 @@ pub fn gradient_descent(xy: &Array2<f64>, theta: &mut Array1<f64>, alpha: f64, i
         //compute_cost(xy, theta);
         //println!("{}", theta);
     }
+}
+
+pub fn gradient_descent_multi(x: &Array2<f64>, y: &Array1<f64>, theta: &mut Array1<f64>, alpha: f64, iterations: usize){
+    let (m, _n) = x.dim();
+
+    for _i in 0..iterations{
+        let hypo = x.dot(&theta.slice(s![1..])).mapv(|i| (i+theta[0])) - y;
+
+        // In order to make the calculation faster
+        // Instead of adding a column of ones to X
+        // I will just do the dot product without the first extra column
+        let pre_des_1 = hypo.dot(x);
+
+        // Then make the first column with the result (Which is the sum of "hypo")
+        let mut pre_des: Array1<f64> = arr1(&[hypo.sum()]);
+
+        // Then finally append them together.
+        // this array should have a length equal to the theta length
+        pre_des.append(Axis(0), (&pre_des_1).into()).unwrap();
+
+        let des = alpha * (1.0/m as f64) * pre_des;
+
+         *theta = theta.clone() - des;
+        //println!("theta: {}", theta);
+    }
+
+    println!("{}", theta);
 
 }

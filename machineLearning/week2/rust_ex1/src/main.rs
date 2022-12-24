@@ -103,6 +103,11 @@ fn main() {
     data_manipulation::feature_normalize(&mut x);
     println!("{:?}", x);
 
+
+
+    let mut theta = arr1(&[0.0, 2.0, 3.0]);
+    linear_regression::gradient_descent_multi(&x, &y, &mut theta, alpha, iterations);
+
     //[X mu sigma] = featureNormalize(X);
 
     // Add intercept term to X
