@@ -55,8 +55,9 @@ pub fn gradient_descent(xy: &Array2<f64>, theta: &mut Array1<f64>, alpha: f64, i
     }
 }
 
-pub fn gradient_descent_multi(x: &Array2<f64>, y: &Array1<f64>, theta: &mut Array1<f64>, alpha: f64, iterations: usize){
+pub fn gradient_descent_multi(x: &Array2<f64>, y: &Array1<f64>, theta: &mut Array1<f64>, alpha: f64, iterations: usize) -> Array1<f64>{
     let (m, _n) = x.dim();
+    let mut j_history: Vec<f64> = Vec::new();
 
     for _i in 0..iterations{
         let hypo = x.dot(&theta.slice(s![1..])).mapv(|i| (i+theta[0])) - y;
@@ -75,10 +76,14 @@ pub fn gradient_descent_multi(x: &Array2<f64>, y: &Array1<f64>, theta: &mut Arra
 
         let des = alpha * (1.0/m as f64) * pre_des;
 
-         *theta = theta.clone() - des;
+        *theta = theta.clone() - des;
         //println!("theta: {}", theta);
+
+       j_history.push(compute_cost_multi(x, y, theta)); 
     }
 
     println!("{}", theta);
+
+    Array1::from_shape_vec(iterations, j_history).unwrap()
 
 }

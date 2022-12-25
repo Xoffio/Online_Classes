@@ -101,18 +101,24 @@ fn main() {
     // Scale features and set them to zero mean
     println!("Normalizing Features ...");
     data_manipulation::feature_normalize(&mut x);
-    println!("{:?}", x);
+    //println!("{:?}", x);
 
+    //  ================ Part 2: Gradient Descent ================
 
+    println!("Running gradient descent ...n");
 
-    let mut theta = arr1(&[0.0, 2.0, 3.0]);
-    linear_regression::gradient_descent_multi(&x, &y, &mut theta, alpha, iterations);
+    // Choose some alpha value
+    let alpha = 0.01;
+    let iterations = 400;
 
-    //[X mu sigma] = featureNormalize(X);
+    // Init Theta and Run Gradient Descent
+    let mut theta = arr1(&[0.0, 0.0, 0.0]);
+    let j_history = linear_regression::gradient_descent_multi(&x, &y, &mut theta, alpha, iterations);
 
-    // Add intercept term to X
-    //X = [ones(m, 1) X];
+    // Plot the convergence graph
+    plot_data::plot_data_debug_j(&j_history, "testr_jhist.png");
 
-
-    // ================ Part 2: Gradient Descent ================
+    // Display gradient descent's result
+    println!("Theta computed from gradient descent:");
+    //println!(" %f ", theta);
 }
