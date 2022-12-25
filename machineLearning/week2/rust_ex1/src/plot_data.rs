@@ -78,3 +78,38 @@ pub fn plot_data_arr2_and_pred_line(xy: &Array2::<f64>, theta: &Array1::<f64>, o
         LineSeries::new((0..=25).map(|x| (x as f64, theta[0] + (x as f64) * theta[1])), &BLUE),
     ).unwrap();
 }
+
+pub fn plot_data_debug_j(xy: &Array1::<f64>, out_path: &str){
+    let arr_len = xy.len();
+    let mut min = xy[0];
+    let mut max = xy[0];
+
+    for y in xy.iter() {
+        if y < &min {
+            min = *y;
+        }
+
+        if y > &max {
+            max = *y;
+        }
+    }
+  
+    // Create the bitmap ( where we are going to draw our data)
+    let root_area = BitMapBackend::new(out_path, (960, 540)).into_drawing_area();
+    root_area.fill(&WHITE).unwrap();
+
+    let mut ctx = ChartBuilder::on(&root_area)
+        // size of data label to the left, right, top, and bottom
+        .set_label_area_size(LabelAreaPosition::Left, 40.0)
+        .set_label_area_size(LabelAreaPosition::Bottom, 40.0)
+        .set_label_area_size(LabelAreaPosition::Right, 40.0)
+        .set_label_area_size(LabelAreaPosition::Top, 40.0)
+        .build_cartesian_2d(0.0..(arr_len as f64), (min as f64)..(max as f64)) // Cartesian range and type
+        .unwrap();
+
+    ctx.configure_mesh().draw().unwrap();
+
+    ctx.draw_series(
+        LineSeries::new((0..=(arr_len-1)).map(|x| (x as f64, xy[x])), &BLUE),
+    ).unwrap();
+}
