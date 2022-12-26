@@ -1,6 +1,6 @@
-use ndarray::{Axis, ArrayBase, OwnedRepr, Dimension, RemoveAxis};
+use ndarray::{Axis, ArrayBase, OwnedRepr, Dimension, RemoveAxis, Array1};
 
-pub fn feature_normalize<T: Dimension + RemoveAxis>(arr: &mut ArrayBase<OwnedRepr<f64>, T>){
+pub fn feature_normalize<T: Dimension + RemoveAxis>(arr: &mut ArrayBase<OwnedRepr<f64>, T>) -> (Array1<f64>, Array1<f64>){
     let mut min_max = Vec::new();
 
     // Get the min and max for each column
@@ -11,7 +11,7 @@ pub fn feature_normalize<T: Dimension + RemoveAxis>(arr: &mut ArrayBase<OwnedRep
         let n_features = col.len() as f64;
         //println!("{}", col[0]);
 
-        println!("{:?}", col);
+        //println!("{:?}", col);
         for i in col.iter(){
             if first_val {
                 min_max.push((*i, *i, 0.0, 0.0));
@@ -34,6 +34,9 @@ pub fn feature_normalize<T: Dimension + RemoveAxis>(arr: &mut ArrayBase<OwnedRep
         min_max[last_col_i].3 = col.std(1.0);
     }
 
+    let (r_mean, r_stander): (Vec<f64>, Vec<f64>) = min_max.iter().map(|row| (row.2, row.3)).unzip();
+    let r_mean = Array1::from_shape_vec(r_mean.len(), r_mean).unwrap();
+    let r_stander = Array1::from_shape_vec(r_stander.len(), r_stander).unwrap();
 
     let mut min_max_iter = min_max.iter();
     // Lets normalize the matrix
@@ -46,8 +49,10 @@ pub fn feature_normalize<T: Dimension + RemoveAxis>(arr: &mut ArrayBase<OwnedRep
             //*i = (*i-mean)/(max - min);
             *i = (*i-mean)/stand_der;
         }
-        println!("{:.3?} {:.3?}", mean, stand_der);
+        //println!("{:.3?} {:.3?}", mean, stand_der);
     }
 
-    println!("{:?}", min_max);
+    (r_mean, r_stander)
+
+    //println!("{:?}", min_max);
 }
