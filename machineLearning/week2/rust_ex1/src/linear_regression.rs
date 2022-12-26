@@ -28,7 +28,7 @@ pub fn compute_cost_multi(x: &Array2<f64>, y: &Array1<f64>, theta: &Array1<f64>)
     
     //let elapsed = now.elapsed().as_micros();
     //println!("Elapsed (μs): {}", elapsed);
-    println!("cost : {:?}", &cost);
+    //println!("cost : {:?}", &cost);
 
     // Return the cost
     cost
@@ -81,8 +81,6 @@ pub fn gradient_descent_multi(x: &Array2<f64>, y: &Array1<f64>, theta: &mut Arra
 
        j_history.push(compute_cost_multi(x, y, theta)); 
     }
-
-    println!("{}", theta);
 
     Array1::from_shape_vec(iterations, j_history).unwrap()
 

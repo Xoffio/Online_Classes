@@ -1,4 +1,4 @@
-use ndarray::{Array2, arr1, Array1, s};
+use ndarray::{Array2, arr1, Array1, s, Axis};
 use std::io::{stdin, Read};
 
 mod warm_up_exercise;
@@ -100,7 +100,7 @@ fn main() {
 
     // Scale features and set them to zero mean
     println!("Normalizing Features ...");
-    data_manipulation::feature_normalize(&mut x);
+    let (mean, stander) = data_manipulation::feature_normalize(&mut x);
     //println!("{:?}", x);
 
     //  ================ Part 2: Gradient Descent ================
@@ -120,5 +120,26 @@ fn main() {
 
     // Display gradient descent's result
     println!("Theta computed from gradient descent:");
-    //println!(" %f ", theta);
+    println!(" {} ", theta);
+
+    // Estimate the price of a 1650 sq-ft, 3 br house
+    // ====================== YOUR CODE HERE ======================
+    // Recall that the first column of X is all-ones. Thus, it does
+    // not need to be normalized.
+    let mut d: Array1<f64> = arr1(&[1650.0, 3.0]);
+    d = (d - mean) / stander;
+    //let d = arr1(&[1.0]).append(Axis(0), d.clone().view()).unwrap();
+    //d.append(Axis(0), array)
+    let price = d.dot(&theta.slice(s![1..])) + theta[0]; 
+
+
+    // ============================================================
+
+    println!("Predicted price of a 1650 sq-ft, 3 br house...");
+    println!("(using gradient descent): {}", price);
+
+    println!("Program paused. Press enter to continue.\n");
+    stdin().read(&mut [0]).unwrap();
+
+    // ================ Part 3: Normal Equations ================
 }
