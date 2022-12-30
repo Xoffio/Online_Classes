@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "01_03_defining_modules/hello_world/Cargo.toml"
+    ]
+}
