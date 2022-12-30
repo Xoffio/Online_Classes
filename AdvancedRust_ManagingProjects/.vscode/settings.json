@@ -1,5 +1,6 @@
 {
     "rust-analyzer.linkedProjects": [
-        "01_03_defining_modules/hello_world/Cargo.toml"
+        "01_03_defining_modules/hello_world/Cargo.toml",
+        "01_06_public_structs_and_enums/hello_mod/Cargo.toml"
     ]
 }
