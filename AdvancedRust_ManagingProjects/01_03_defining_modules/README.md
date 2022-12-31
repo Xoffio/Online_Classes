@@ -1,6 +1,6 @@
 # 01.03 to 01.05
 
-In this package we will write the content of the videos 
+In this package we will write the content of the videos:
 
 ## `1.3 Defining Modules` inline modules
 To define modules in the same file just type `mod [name_of_module]` and declare the functions inside it. You can also declare modules inside modules. Check the `main.rs` file to learn more.
