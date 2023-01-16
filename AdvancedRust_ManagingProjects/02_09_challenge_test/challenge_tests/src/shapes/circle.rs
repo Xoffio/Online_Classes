@@ -24,3 +24,18 @@ impl Circle {
         2.0 * std::f64::consts::PI * self.radius
     }
 }
+
+#[cfg(test)]
+mod test{
+    use super::*;
+
+    #[test]
+    fn check_circle_funcs(){
+        let circle = Circle::new(3.0);
+        let area = circle.get_feature(Feature::Area);
+        let perimeter = circle.get_feature(Feature::Perimeter);
+
+        assert_eq!(28.274333882308138, area);
+        assert_eq!(18.84955592153876, perimeter);
+    }
+}

@@ -4,6 +4,7 @@
         "01_06_public_structs_and_enums/hello_mod/Cargo.toml",
         "01_07_bringin_paths_into_scope/hello_world/Cargo.toml",
         "01_10_challenge_modules/challenge_modules/Cargo.toml",
-        "02_07_unit_tests/math_funcs/Cargo.toml"
+        "02_07_unit_tests/math_funcs/Cargo.toml",
+        "02_09_challenge_test/challenge_tests/Cargo.toml"
     ]
 }
