@@ -1,7 +1,7 @@
 # 02.09
 
 In this video the instructor introduce a challenge.
-The code should be the one from class `01.10`
+The code to start with should be the one from class `01.10`
 
 ## Goals
 - Implement unit test within the `shapes` library
