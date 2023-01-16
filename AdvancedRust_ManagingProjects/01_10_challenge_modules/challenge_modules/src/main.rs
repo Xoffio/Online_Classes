@@ -1,7 +1,7 @@
-mod shape;
-use crate::shape::rectangle::Rectangle;
-use crate::shape::circle::Circle;
-use crate::shape::feature::Feature;
+mod shapes;
+use crate::shapes::rectangle::Rectangle;
+use crate::shapes::circle::Circle;
+use crate::shapes::feature::Feature;
 fn main() {
     let rect = Rectangle::new(1.0, 2.0);
     let area = rect.get_feature(Feature::Area);

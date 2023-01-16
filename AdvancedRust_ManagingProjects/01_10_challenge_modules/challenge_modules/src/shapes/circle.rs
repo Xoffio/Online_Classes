@@ -1,4 +1,4 @@
-use crate::shape::feature::Feature;
+use crate::shapes::feature::Feature;
 
 pub struct Circle {
     radius: f64
